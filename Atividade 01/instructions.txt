@@ -1,0 +1,20 @@
+LAB
+
+LAB 1 - Página inicial
+
+
+Entrega: A entrega dessa atividade deve ser um link do github.
+
+Objetivo: Construir o esqueleto da página inicial do seu site. Essa página deve falar sobre o desenvolvedor do site, no caso, você. Construa a sua página da forma mais completa possível. Essa página vai funcionar futuramente como um portfólio profissional do seu trabalho.
+
+
+
+HTML: Reproduza uma página HTML (‘index.html’):        
+(valor 0.5) - Título (tag <h1> com seu nome).                                        
+(valor 0.5) - Texto (tags <p> com informações a sua escolha)                        
+(valor 1.0) - Pelo menos 1 lista                                                          
+(valor 2.0) - Pelo menos 5 imagens                                                  
+(valor 3.0) - Pelo menos 3 links externos                                                  
+(valor 3.0) - Pelo menos 3 iframes, sendo pelo menos 1 mapa                          
+
+Obs: Outras penalidades podem ser aplicadas.
