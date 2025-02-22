@@ -1,0 +1,45 @@
+div.back-btn {
+	margin-top: 15px;
+}
+
+div.back-btn a {
+	text-decoration: none;
+	color: gray;
+}
+
+div.back-btn a:hover {
+	color: black;
+}
+
+table {
+	width: 100%;
+	margin: 0 auto;
+	font-size: 1.2em;
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+table thead {
+	font-weight: bold;
+	text-align: left;
+	background-color: lightgray;
+}
+
+table tr:nth-child(even) {
+	background-color: #f2f2f2;
+}
+
+table tr th {
+	padding: 10px;
+}
+
+table tr td {
+	padding: 10px;
+}
+
+table caption {
+	padding-top: 10px;
+	font-size: 0.8em;
+	text-align: center;
+	caption-side: bottom;
+}
