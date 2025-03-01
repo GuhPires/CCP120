@@ -1,0 +1,137 @@
+body {
+	margin: 0;
+	background-color: lightgray;
+}
+
+h1 {
+	font-size: 45px;
+}
+
+h2 {
+	font-size: 30px;
+}
+
+header div {
+	padding: 20px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: bisque;
+	border: 3px solid darkblue;
+}
+
+header div img {
+	height: 100px;
+}
+
+header div h1 {
+	color: darkgreen;
+}
+
+header ul {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: lightskyblue;
+}
+
+header ul li {
+	padding: 10px 80px;
+	color: darkred;
+	font-weight: bold;
+	text-transform: uppercase;
+	cursor: default;
+}
+
+section {
+	width: 90%;
+	margin: 0 auto;
+	padding-bottom: 30px;
+	text-align: center;
+}
+
+section p {
+	padding-top: 20px;
+	text-align: center;
+	font-family: sans-serif;
+	font-size: 20px;
+	color: indigo;
+}
+
+section.books div {
+	width: 70%;
+	margin: 0 auto;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+section.books div img {
+	height: 300px;
+}
+
+section.learn div {
+	width: 80%;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+section.contact table {
+	margin: 0 auto;
+}
+
+section.contact table {
+	border: 4px dashed red;
+}
+
+section.contact table thead {
+	color: red;
+	font-weight: bold;
+}
+
+section.contact table td {
+	padding: 10px 20px;
+	border: 1px solid red;
+}
+
+section.references {
+	width: 40%;
+	margin-bottom: 30px;
+	padding: 5px;
+	background-color: yellow;
+}
+
+section.references p {
+	margin: 0;
+	padding: 0;
+	text-align: left;
+	color: black;
+}
+
+section.references ul {
+	text-align: left;
+}
+
+section.references ul li a {
+	text-decoration: none;
+	color: black;
+}
+
+footer {
+	padding: 10px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	background-color: bisque;
+	font-family: "Comic Neue", serif;
+	font-size: 15px;
+}
+
+footer img {
+	height: 100px;
+}
