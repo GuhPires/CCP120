@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Pirate Treasure Hunt</title>
+		<link rel="stylesheet" href="style.css" />
+	</head>
+	<body>
+		<canvas id="gameCanvas"></canvas>
+		<div id="scoreboard" style="display: none">Lives: 3 | Score: 0</div>
+		<div id="start-screen">
+			Pirate Treasure Hunt<br />
+			<button onclick="start()">Start</button>
+		</div>
+		<div id="game-over" style="display: none">
+			Game Over!<br />
+			<button onclick="start()">Play Again</button>
+		</div>
+
+		<script src="main.js"></script>
+	</body>
+</html>
