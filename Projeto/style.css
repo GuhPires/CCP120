@@ -7,43 +7,94 @@ body {
 	overflow: hidden;
 	font-family: "Pirata One", cursive;
 }
+
 canvas {
 	display: block;
 	cursor: none;
 }
-#game-over,
-#start-screen {
+
+button {
+	all: unset;
+	min-width: 180px;
+	padding: 12px 32px;
+	margin: 15px 0;
+	display: block;
+	background: linear-gradient(#f5e1b4, #e0c48f);
+	border: 2px solid #7b5c36;
+	color: #2f1f0e;
+	text-align: center;
+	font-family: "Georgia", serif;
+	font-size: 2rem;
+	border-radius: 10px;
+	box-shadow: 4px 4px 0 #533c26;
+	cursor: pointer;
+	transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+button:hover {
+	transform: translateY(-2px);
+	box-shadow: 6px 6px 0 #533c26;
+}
+
+button:active {
+	transform: translateY(2px);
+	box-shadow: 2px 2px 0 #533c26;
+}
+
+h1,
+h2 {
+	text-transform: uppercase;
+}
+
+h1 {
+	margin: 20px 0;
+	font-size: 15rem;
+}
+
+h2 {
+	margin: 10px 0;
+	font-size: 6rem;
+}
+
+p {
+	margin: 0;
+	font-size: 2rem;
+}
+
+#start-screen,
+#pause-screen,
+#game-over {
 	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100vw;
 	height: 100vh;
-	background-color: rgba(0, 0, 0, 0.8);
-	color: white;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	font-size: 2rem;
+	color: white;
+}
+
+#start-screen {
+	background-image: url("images//home-background.png");
+	background-size: cover;
+	background-repeat: no-repeat;
+}
+
+#pause-screen,
+#game-over {
+	background-color: rgba(0, 0, 0, 0.6);
 	z-index: 10;
 }
-#game-over button,
-#start-screen button {
-	margin-top: 20px;
-	padding: 10px 20px;
-	font-size: 1.2rem;
-	background-color: #d4af37;
-	border: none;
-	border-radius: 10px;
-	cursor: pointer;
-}
+
 #scoreboard {
 	position: absolute;
-	bottom: 10px;
+	top: 10px;
 	right: 10px;
+	padding: 20px 50px;
 	background-color: rgba(0, 0, 0, 0.5);
 	color: white;
-	padding: 10px;
 	border-radius: 8px;
 	font-size: 1rem;
 	z-index: 5;

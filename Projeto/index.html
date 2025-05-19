@@ -3,19 +3,40 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Pirate Treasure Hunt</title>
+		<title>Coin Hunt</title>
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
 		<canvas id="gameCanvas"></canvas>
-		<div id="scoreboard" style="display: none">Lives: 3 | Score: 0</div>
-		<div id="start-screen">
-			Pirate Treasure Hunt<br />
-			<button onclick="start()">Start</button>
+		<div id="scoreboard" style="display: none">
+			<p id="lives">Vidas: <span>3</span></p>
+			<p id="score">Pontuação: <span>0</span></p>
+			<p id="speed">Velocidade: <span>1</span></p>
 		</div>
+
+		<div id="start-screen">
+			<h1>Coin Hunt</h1>
+
+			<button onclick="start()">Jogar</button>
+			<button onclick="howTo()">Instruções</button>
+			<button onclick="about()">Sobre</button>
+		</div>
+
+		<div id="pause-screen" style="display: none">
+			<h2>Jogo Pausado</h2>
+
+			<button onclick="play()">Continuar</button>
+			<button onclick="start()">Reiniciar</button>
+			<button onclick="finish()">Finalizar</button>
+		</div>
+
 		<div id="game-over" style="display: none">
-			Game Over!<br />
-			<button onclick="start()">Play Again</button>
+			<h2>Você Perdeu!</h2>
+
+			<p>Sua Pontuação: <span>0</span></p>
+
+			<button onclick="start()">Jogar Novamente</button>
+			<button onclick="back()">Voltar ao Início</button>
 		</div>
 
 		<script src="main.js"></script>

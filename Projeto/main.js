@@ -21,6 +21,7 @@ const Color = {
 const GameStatus = {
 	WAITING: "WAITING", // before playing
 	PLAYING: "PLAYING", // during play
+	PAUSED: "PAUSED", // during pause
 	FINISHED: "FINISHED", // after playing (game over)
 };
 
@@ -31,29 +32,21 @@ const FallingObjectType = {
 
 // GAME CONSTANTS
 const GAME_CONFIG = {
-	debug: true,
+	debug: false,
+	showImages: true,
 	spawnRate: 60,
 	speedRate: 0.5,
-};
-
-const GAME_INITIAL_STATE = {
-	status: GameStatus.WAITING,
-	currentFrame: 0,
-	lives: 3,
-	score: 0,
-	speed: 1.5,
-	fallingObjects: [],
 };
 
 const MARGINS = {
 	canvas: {
 		start: {
-			x: 50,
+			x: 100,
 			y: 0,
 		},
 		end: {
-			x: canvas.width - 50,
-			y: canvas.height - 100,
+			x: canvas.width - 100,
+			y: canvas.height - 150,
 		},
 	},
 	barrel: {
@@ -62,11 +55,44 @@ const MARGINS = {
 	},
 	fallingObject: {
 		x: 5,
-		y: 10,
+		y: 5,
 	},
 };
 
+const backgroundImg = new Image();
+backgroundImg.src = "images/game-background.png";
+
+const barrelImg = new Image();
+barrelImg.src = "images/barrel.png";
+
+const coinImg = new Image();
+coinImg.src = "images/coin.png";
+
+const bombImg = new Image();
+bombImg.src = "images/bomb.png";
+
+const gameOverScreen = document.getElementById("game-over");
+const startScreen = document.getElementById("start-screen");
+const pauseScreen = document.getElementById("pause-screen");
+const scoreboard = document.getElementById("scoreboard");
+const lives = document.querySelector("#lives span");
+const score = document.querySelector("#score span");
+const speed = document.querySelector("#speed span");
+const finalScore = document.querySelector("#game-over p span");
+
 // HELPER FUNCTIONS
+function cleanState() {
+	return {
+		status: GameStatus.WAITING,
+		currentFrame: 0,
+		lives: 3,
+		score: 0,
+		speed: 1.5,
+		fallingObjects: [],
+		cursorX: null,
+	};
+}
+
 const drawCoordinates = ({ currentX, currentY, labelX, labelY }) => {
 	ctx.fillStyle = Color.BLACK;
 	ctx.font = "12px Arial";
@@ -82,10 +108,21 @@ const drawCollisionMargins = (collision) => {
 	ctx.fillRect(collision.x, collision.y, collision.width, collision.height);
 };
 
+const clearCanvas = () => {
+	ctx.clearRect(0, 0, canvas.width, canvas.height);
+	// add the background
+	if (GAME_CONFIG.showImages) {
+		ctx.drawImage(backgroundImg, 0, 0, canvas.width, canvas.height);
+	} else {
+		ctx.fillStyle = Color.BACKGROUND;
+		ctx.fillRect(0, 0, canvas.width, canvas.height);
+	}
+};
+
 // GAME OBJECTS
 const Barrel = {
-	height: 60,
-	width: 60,
+	height: 150,
+	width: 150,
 	x: canvas.width / 2,
 	y: MARGINS.canvas.end.y,
 	get collision() {
@@ -109,9 +146,19 @@ const Barrel = {
 			drawCollisionMargins(this.collision);
 		}
 
-		ctx.fillStyle = Color.BROWN;
-		// makes sure that the barrel coords will be always the center of the barrel drawing
-		ctx.fillRect(this.x - this.width / 2, this.y, this.width, this.height);
+		if (GAME_CONFIG.showImages) {
+			ctx.drawImage(
+				barrelImg,
+				this.x - this.width / 2,
+				this.y,
+				this.width,
+				this.height
+			);
+		} else {
+			ctx.fillStyle = Color.BROWN;
+			// makes sure that the barrel coords will be always the center of the barrel drawing
+			ctx.fillRect(this.x - this.width / 2, this.y, this.width, this.height);
+		}
 	},
 	update(cursorX) {
 		// move barrel closer to the cursor 10% of the distance at a time
@@ -120,7 +167,7 @@ const Barrel = {
 };
 
 const FallingObject = {
-	radius: 20,
+	radius: 30,
 	x: null, // will be set on spawn
 	y: -20,
 	type: null, // will be set on spawn
@@ -133,22 +180,31 @@ const FallingObject = {
 				labelX: this.x,
 				labelY: this.y - 5,
 			});
-			console.log(this.collision);
 			drawCollisionMargins(this.collision);
 		}
 
-		ctx.fillStyle =
-			this.type === FallingObjectType.COIN ? Color.YELLOW : Color.GRAY;
-		// drawing a perfect circle
-		ctx.beginPath();
-		ctx.arc(
-			this.x + this.radius,
-			this.y + this.radius,
-			this.radius,
-			0,
-			Math.PI * 2
-		);
-		ctx.fill();
+		if (GAME_CONFIG.showImages) {
+			ctx.drawImage(
+				this.type === FallingObjectType.COIN ? coinImg : bombImg,
+				this.x,
+				this.y,
+				this.radius * 2,
+				this.radius * 2
+			);
+		} else {
+			ctx.fillStyle =
+				this.type === FallingObjectType.COIN ? Color.YELLOW : Color.GRAY;
+			// drawing a perfect circle
+			ctx.beginPath();
+			ctx.arc(
+				this.x + this.radius,
+				this.y + this.radius,
+				this.radius,
+				0,
+				Math.PI * 2
+			);
+			ctx.fill();
+		}
 	},
 	update(speed) {
 		this.y += speed;
@@ -188,27 +244,80 @@ const ENDZONE = {
 	height: 10,
 };
 
-let cursorX = null;
+let state = cleanState();
+let animationFrameId = null;
 
 // WINDOW EVENT LISTENERS
-// TODO: register only when starting playing, unregister on game over
 document.addEventListener("mousemove", (e) => {
-	cursorX = e.clientX;
+	if (state.status !== GameStatus.PLAYING) return;
 
-	if (cursorX < MARGINS.canvas.start.x) cursorX = MARGINS.canvas.start.x;
-	if (cursorX > MARGINS.canvas.end.x) cursorX = MARGINS.canvas.end.x;
+	state.cursorX = e.clientX;
+
+	if (state.cursorX < MARGINS.canvas.start.x)
+		state.cursorX = MARGINS.canvas.start.x;
+	if (state.cursorX > MARGINS.canvas.end.x)
+		state.cursorX = MARGINS.canvas.end.x;
+});
+
+document.addEventListener("keydown", (e) => {
+	if (state.status === GameStatus.WAITING) return;
+
+	if (e.key === "Escape") state.status === GameStatus.PAUSED ? play() : pause();
 });
 
 // GAME FUNCTIONS
 function start() {
-	document.getElementById("game-over").style.display = "none";
-	document.getElementById("start-screen").style.display = "none";
-	document.getElementById("scoreboard").style.display = "block";
+	if (animationFrameId) {
+		cancelAnimationFrame(animationFrameId);
+	}
 
-	animate({ ...GAME_INITIAL_STATE, status: GameStatus.PLAYING });
+	state = cleanState();
+
+	play();
+	animate();
 }
 
-function checkCollision(obj, state) {
+function play() {
+	gameOverScreen.style.display = "none";
+	startScreen.style.display = "none";
+	pauseScreen.style.display = "none";
+	scoreboard.style.display = "block";
+
+	state.status = GameStatus.PLAYING;
+}
+
+function pause() {
+	pauseScreen.style.display = "flex";
+
+	state.status = GameStatus.PAUSED;
+}
+
+function finish() {
+	pauseScreen.style.display = "none";
+	gameOverScreen.style.display = "flex";
+	finalScore.innerText = state.score;
+
+	state.status = GameStatus.FINISHED;
+}
+
+function back() {
+	gameOverScreen.style.display = "none";
+	startScreen.style.display = "flex";
+	pauseScreen.style.display = "none";
+	scoreboard.style.display = "none";
+
+	state.status = GameStatus.WAITING;
+}
+
+function howTo() {
+	state.status = GameStatus.WAITING;
+}
+
+function about() {
+	state.status = GameStatus.WAITING;
+}
+
+function checkCollision(obj) {
 	// TODO: fix collision issues
 	const objCollisionY = obj.collision.y + obj.collision.height;
 	const objCollisionLeftBorder = obj.collision.x;
@@ -227,10 +336,11 @@ function checkCollision(obj, state) {
 		if (obj.type === FallingObjectType.COIN) {
 			state.score += 10;
 			if (!GAME_CONFIG.debug && state.score % 50 === 0)
-				speed += GAME_CONFIG.speedRate;
+				state.speed += GAME_CONFIG.speedRate;
 		} else {
 			state.lives -= 1;
-			if (!GAME_CONFIG.debug && state.lives <= 0) gameOver = true;
+			if (!GAME_CONFIG.debug && state.lives <= 0)
+				state.status = GameStatus.FINISHED;
 		}
 		return false;
 	}
@@ -238,26 +348,21 @@ function checkCollision(obj, state) {
 	return objCollisionY < Barrel.y + Barrel.height;
 }
 
-function updateScoreboard(state) {
-	document.getElementById(
-		"scoreboard"
-	).innerText = `Lives: ${state.lives} | Score: ${state.score}`;
+function updateScoreboard() {
+	lives.innerText = state.lives;
+	score.innerText = state.score;
 }
 
-function animate(state) {
-	if (state.status === GameStatus.FINISHED) {
-		document.getElementById("game-over").style.display = "flex";
-		return;
+function animate() {
+	if (state.status !== GameStatus.PLAYING) {
+		if (state.status === GameStatus.FINISHED) return finish();
+		return (animationFrameId = requestAnimationFrame(animate));
 	}
 
-	// clears the canvas
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	// add the background
-	ctx.fillStyle = Color.BACKGROUND;
-	ctx.fillRect(0, 0, canvas.width, canvas.height);
+	clearCanvas();
 
 	// updates the cursor position and draws the barrel
-	Barrel.update(cursorX);
+	Barrel.update(state.cursorX);
 	Barrel.draw(ctx);
 
 	// spawn a new random object at the defined rate
@@ -270,18 +375,25 @@ function animate(state) {
 		obj.draw(ctx);
 	});
 
-	state.fallingObjects = state.fallingObjects.filter((obj) =>
-		checkCollision(obj, state)
-	);
+	state.fallingObjects = state.fallingObjects.filter(checkCollision);
 
-	updateScoreboard(state);
+	updateScoreboard();
 
-	// draw a limit line at the end of the barrel when in debug mode
+	// draw a limit line at the end of the barrel and on the screen limits when in debug mode
 	if (GAME_CONFIG.debug) {
 		ctx.fillStyle = Color.RED;
 		ctx.fillRect(ENDZONE.x, ENDZONE.y, ENDZONE.width, ENDZONE.height);
+
+		ctx.fillStyle = Color.RED;
+		ctx.fillRect(
+			MARGINS.canvas.start.x,
+			ENDZONE.y,
+			ENDZONE.width,
+			ENDZONE.height
+		);
+		+Math.random() * (MARGINS.canvas.end.x - this.radius * 2);
 	}
 
 	state.currentFrame++;
-	requestAnimationFrame(() => animate(state));
+	animationFrameId = requestAnimationFrame(animate);
 }
