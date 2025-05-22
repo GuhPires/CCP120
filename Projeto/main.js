@@ -80,6 +80,7 @@ const scoreboard = document.getElementById("scoreboard");
 const lives = document.querySelector("#lives span");
 const score = document.querySelector("#score span");
 const speed = document.querySelector("#speed span");
+const missedCoins = document.querySelector("#missed span");
 const finalScore = document.querySelector("#game-over p span");
 
 // HELPER FUNCTIONS
@@ -90,6 +91,7 @@ function cleanState() {
 		lives: 3,
 		score: 0,
 		speed: 1.5,
+		missedCoins: 0,
 		fallingObjects: [],
 		cursorX: null,
 	};
@@ -336,6 +338,12 @@ function about() {
 	state.status = GameStatus.WAITING;
 }
 
+function subLives() {
+	state.lives -= 1;
+	if (!GAME_CONFIG.debug && state.lives <= 0)
+		state.status = GameStatus.FINISHED;
+}
+
 function checkCollision(obj) {
 	// TODO: fix collision issues
 	const objCollisionY = obj.collision.y + obj.collision.height;
@@ -357,19 +365,28 @@ function checkCollision(obj) {
 			if (!GAME_CONFIG.debug && state.score % 50 === 0)
 				state.speed += GAME_CONFIG.speedRate;
 		} else {
-			state.lives -= 1;
-			if (!GAME_CONFIG.debug && state.lives <= 0)
-				state.status = GameStatus.FINISHED;
+			subLives();
 		}
 		return false;
 	}
 
-	return objCollisionY < Barrel.y + Barrel.height;
+	const isFalling = objCollisionY < Barrel.y + Barrel.height;
+
+	if (!isFalling && obj.type === FallingObjectType.COIN) {
+		state.missedCoins += 1;
+		if (!GAME_CONFIG.debug && state.missedCoins % 3 === 0) {
+			subLives();
+		}
+	}
+
+	return isFalling;
 }
 
 function updateScoreboard() {
 	lives.innerText = state.lives;
 	score.innerText = state.score;
+	speed.innerText = state.speed;
+	missedCoins.innerText = state.missedCoins % 3;
 }
 
 function animate() {
