@@ -1,4 +1,18 @@
-// Projet completed by following the official HTML <canvas> documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+/**
+ * ============================================
+ *                 COIN HUNT
+ * ============================================
+ * Author: Gustavo G. Pires
+ * RA: 11.219.056-6
+ * Course: Engenharia de Robôs
+ *
+ * About: Jogo desenvolvido em HTML5 Canvas, com temática
+ * pirata, onde o jogador deve mover um barril
+ * para coletar moedas e evitar bombas.
+ *
+ * Official HTML Canvas documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+ * ============================================
+ */
 
 // CANVAS DEFINITION
 const canvas = document.getElementById("gameCanvas");
