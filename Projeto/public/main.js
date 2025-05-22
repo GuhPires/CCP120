@@ -11,6 +11,9 @@
  * para coletar moedas e evitar bombas.
  *
  * Official HTML Canvas documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+ * Contain AI Generated Images
+ * Free Stock Music from https://mixkit.co/free-stock-music
+ * Free "Pirate" background Music by Magiksolo (Artem Hramushkin) from https://pixabay.com
  * ============================================
  */
 
@@ -49,6 +52,13 @@ const GAME_CONFIG = {
 	showImages: true,
 	spawnRate: 60,
 	speedRate: 0.5,
+	volume: {
+		background: 0.4,
+		coin: 0.6,
+		missedCoin: 1,
+		bomb: 0.8,
+		gameover: 1,
+	},
 };
 
 const MARGINS = {
@@ -72,6 +82,7 @@ const MARGINS = {
 	},
 };
 
+// IMAGES
 const backgroundImg = new Image();
 backgroundImg.src = "images/game-background.png";
 
@@ -83,6 +94,13 @@ coinImg.src = "images/coin.png";
 
 const bombImg = new Image();
 bombImg.src = "images/bomb.png";
+
+// SOUNDS
+const coinSound = new Audio("sounds/coin.wav");
+const missedCoinSound = new Audio("sounds/missed-coin.wav");
+const bombSound = new Audio("sounds/bomb.wav");
+const gameoverSound = new Audio("sounds/gameover.wav");
+const bgMusic = new Audio("sounds/game-music.mp3");
 
 const gameOverScreen = document.getElementById("game-over");
 const startScreen = document.getElementById("start-screen");
@@ -134,6 +152,11 @@ const clearCanvas = () => {
 		ctx.fillStyle = Color.BACKGROUND;
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
 	}
+};
+
+const playSound = (sound) => {
+	sound.currentTime = 0;
+	sound.play();
 };
 
 // GAME OBJECTS
@@ -265,6 +288,15 @@ let state = cleanState();
 let animationFrameId = null;
 
 // WINDOW EVENT LISTENERS
+document.addEventListener("DOMContentLoaded", () => {
+	bgMusic.loop = true;
+	bgMusic.volume = GAME_CONFIG.volume.background;
+	coinSound.volume = GAME_CONFIG.volume.coin;
+	missedCoinSound.volume = GAME_CONFIG.volume.missedCoin;
+	bombSound.volume = GAME_CONFIG.volume.bomb;
+	gameoverSound.volume = GAME_CONFIG.volume.gameover;
+});
+
 document.addEventListener("mousemove", (e) => {
 	if (state.status !== GameStatus.PLAYING) return;
 
@@ -283,6 +315,10 @@ document.addEventListener("keydown", (e) => {
 });
 
 // GAME FUNCTIONS
+function playMusic() {
+	playSound(bgMusic);
+}
+
 function start() {
 	if (animationFrameId) {
 		cancelAnimationFrame(animationFrameId);
@@ -318,6 +354,7 @@ function finish() {
 	gameOverScreen.style.display = "flex";
 	finalScore.innerText = state.score;
 
+	playSound(gameoverSound);
 	state.status = GameStatus.FINISHED;
 }
 
@@ -353,8 +390,10 @@ function about() {
 
 function subLives() {
 	state.lives -= 1;
-	if (!GAME_CONFIG.debug && state.lives <= 0)
+	if (!GAME_CONFIG.debug && state.lives <= 0) {
 		state.status = GameStatus.FINISHED;
+		playSound(gameoverSound);
+	}
 }
 
 function checkCollision(obj) {
@@ -374,10 +413,12 @@ function checkCollision(obj) {
 		objCollisionRightBorder < barrelCollisionRightBorder
 	) {
 		if (obj.type === FallingObjectType.COIN) {
+			playSound(coinSound);
 			state.score += 10;
 			if (!GAME_CONFIG.debug && state.score % 50 === 0)
 				state.speed += GAME_CONFIG.speedRate;
 		} else {
+			playSound(bombSound);
 			subLives();
 		}
 		return false;
@@ -387,6 +428,7 @@ function checkCollision(obj) {
 
 	if (!isFalling && obj.type === FallingObjectType.COIN) {
 		state.missedCoins += 1;
+		playSound(missedCoinSound);
 		if (!GAME_CONFIG.debug && state.missedCoins % 3 === 0) {
 			subLives();
 		}

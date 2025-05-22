@@ -105,6 +105,11 @@ p {
 	background-image: url("images//home-background.png");
 }
 
+#start-screen span {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
 #about-screen,
 #howto-screen {
 	background-image: url("images//about-background.png");
