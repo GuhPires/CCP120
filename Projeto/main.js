@@ -74,6 +74,8 @@ bombImg.src = "images/bomb.png";
 const gameOverScreen = document.getElementById("game-over");
 const startScreen = document.getElementById("start-screen");
 const pauseScreen = document.getElementById("pause-screen");
+const howtoScreen = document.getElementById("howto-screen");
+const aboutScreen = document.getElementById("about-screen");
 const scoreboard = document.getElementById("scoreboard");
 const lives = document.querySelector("#lives span");
 const score = document.querySelector("#score span");
@@ -281,6 +283,9 @@ function play() {
 	gameOverScreen.style.display = "none";
 	startScreen.style.display = "none";
 	pauseScreen.style.display = "none";
+	howtoScreen.style.display = "none";
+	aboutScreen.style.display = "none";
+
 	scoreboard.style.display = "block";
 
 	state.status = GameStatus.PLAYING;
@@ -294,6 +299,7 @@ function pause() {
 
 function finish() {
 	pauseScreen.style.display = "none";
+
 	gameOverScreen.style.display = "flex";
 	finalScore.innerText = state.score;
 
@@ -302,18 +308,31 @@ function finish() {
 
 function back() {
 	gameOverScreen.style.display = "none";
-	startScreen.style.display = "flex";
 	pauseScreen.style.display = "none";
 	scoreboard.style.display = "none";
+	aboutScreen.style.display = "none";
+	howtoScreen.style.display = "none";
+
+	startScreen.style.display = "flex";
 
 	state.status = GameStatus.WAITING;
 }
 
 function howTo() {
+	startScreen.style.display = "none";
+	aboutScreen.style.display = "none";
+
+	howtoScreen.style.display = "flex";
+
 	state.status = GameStatus.WAITING;
 }
 
 function about() {
+	startScreen.style.display = "none";
+	howtoScreen.style.display = "none";
+
+	aboutScreen.style.display = "flex";
+
 	state.status = GameStatus.WAITING;
 }
 

@@ -42,7 +42,9 @@ button:active {
 }
 
 h1,
-h2 {
+h2,
+h3,
+h4 {
 	text-transform: uppercase;
 }
 
@@ -56,13 +58,29 @@ h2 {
 	font-size: 6rem;
 }
 
+h3 {
+	margin: 10px 0;
+	font-size: 4rem;
+}
+
+h4 {
+	margin: 10px 0;
+	font-size: 3rem;
+}
+
 p {
 	margin: 0;
 	font-size: 2rem;
 }
 
+.wrapper {
+	width: 80%;
+}
+
 #start-screen,
 #pause-screen,
+#about-screen,
+#howto-screen,
 #game-over {
 	position: absolute;
 	top: 0;
@@ -76,10 +94,25 @@ p {
 	color: white;
 }
 
-#start-screen {
-	background-image: url("images//home-background.png");
+#start-screen,
+#about-screen,
+#howto-screen {
 	background-size: cover;
 	background-repeat: no-repeat;
+}
+
+#start-screen {
+	background-image: url("images//home-background.png");
+}
+
+#about-screen,
+#howto-screen {
+	background-image: url("images//about-background.png");
+}
+
+#howto-screen p {
+	font-size: 1.5rem;
+	font-family: "Georgia", serif;
 }
 
 #pause-screen,
