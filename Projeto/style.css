@@ -110,9 +110,35 @@ p {
 	background-image: url("images//about-background.png");
 }
 
+#about-screen p,
 #howto-screen p {
 	font-size: 1.5rem;
 	font-family: "Georgia", serif;
+}
+
+#about-screen img {
+	width: 250px;
+	height: 250px;
+	margin: 10px auto;
+	display: block;
+	border-radius: 50%;
+}
+
+#about-screen ul {
+	width: 40%;
+	margin: 20px auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	list-style: none;
+}
+
+#about-screen ul li {
+	font-size: 1.5rem;
+}
+
+#about-screen ul li a {
+	color: white;
 }
 
 #pause-screen,

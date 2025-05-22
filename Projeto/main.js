@@ -1,5 +1,4 @@
-// TODO: add my data
-// Done following the official HTML <canvas> documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
+// Projet completed by following the official HTML <canvas> documentation: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D
 
 // CANVAS DEFINITION
 const canvas = document.getElementById("gameCanvas");
